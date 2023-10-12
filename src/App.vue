@@ -14,6 +14,7 @@
 import AppDropdown from "@/components/AppDropdown.vue";
 import AppButton from "@/components/AppButton.vue";
 import AppResultArea from "@/components/AppResultArea.vue";
+import { useAppStore } from '@/store/store';
 
 export default {
   components: {
@@ -21,26 +22,24 @@ export default {
     AppButton,
     AppResultArea,
   },
-  data() {
-    return {
-      items: [
-        { id: 1, name: "Сделка" },
-        { id: 2, name: "Контакт" },
-        { id: 3, name: "Компания" },
-      ],
-      selectedItem: "null",
-      entityIds: [],
+  setup() {
+    const store = useAppStore();
+
+    const handleSelectedItem = (item) => {
+      store.setSelectedItem(item);
     };
-  },
-  methods: {
-    handleSelectedItem(item) {
-      this.selectedItem = item;
-    },
-    handleAddId() {
-      if (this.selectedItem !== "null") {
-        this.entityIds.push(this.selectedItem);
-      }
-    },
+
+    const handleAddId = () => {
+      store.addEntityId();
+    };
+
+    return {
+      items: store.items,
+      selectedItem: store.selectedItem,
+      entityIds: store.entityIds,
+      handleSelectedItem,
+      handleAddId,
+    };
   },
 };
 </script>

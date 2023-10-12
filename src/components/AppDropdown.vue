@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown">
-    <select v-model="selectedItem" @change="emitSelectedItem">
+    <select :value="selectedItem" @change="emitSelectedItem">
       <option value="null">Не выбрано</option>
       <option v-for="item in items" :key="item.id" :value="item.id.toString()">{{ item.name }}</option>
     </select>
@@ -8,24 +8,28 @@
 </template>
 
 <script>
+import { useAppStore } from '@/store/store';
+
 export default {
   emits: ['selected-item'],
   props: {
     items: Array,
   },
-  data() {
-    return {
-      selectedItem: 'null',
+  setup(props, { emit }) {
+    const store = useAppStore();
+
+    const emitSelectedItem = (event) => {
+      
+      store.setSelectedItem(event.target.value);
+      emit('selected-item', event.target.value);
+
     };
-  },
-  methods: {
-    emitSelectedItem() {
-      this.$emit('selected-item', this.selectedItem);
-    },
+
+    return {
+      selectedItem: store.selectedItem,
+      isDisabled: store.isDisabled,
+      emitSelectedItem,
+    };
   },
 };
 </script>
-
-<style scoped>
-
-</style>

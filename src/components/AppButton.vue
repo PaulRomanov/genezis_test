@@ -1,33 +1,35 @@
 <template>
-  
-    <button :class="{ active: selectedItem !== 'null' }" @click="handleCreate" :disabled="isDisabled">{{ label }}</button>
-
+  <button :class="{ active: !disabled }" @click="handleCreate" :disabled="disabled">{{ label }}</button>
 </template>
 
+
 <script>
+import { useAppStore } from '@/store/store';
+import { computed } from 'vue';
+
 export default {
   emits: ['button-click'],
   props: {
     label: String,
-    selectedItem: String,
   },
-  data() {
+  setup(props, { emit }) {
+    const store = useAppStore();
+
+    const disabled = computed(() => store.isDisabled);
+
+    const handleCreate = () => {
+      emit('button-click');
+      
+    };
+   
     return {
-      isDisabled: true,
+      selectedItem: store.selectedItem,
+      disabled,
+      handleCreate,
     };
   },
-  watch: {
-    selectedItem() {
-      this.isDisabled = this.selectedItem === 'null';
-    },
-  },
-  methods: {
-    handleCreate() {
-      this.$emit('button-click');
-    },
-  },
-
 };
+
 </script>
 
 <style scoped>
